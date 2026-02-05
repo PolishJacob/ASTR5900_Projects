@@ -7,9 +7,27 @@ import math
 # This function finds the y value for a given x within the given range of x_pnts using linear interpolation.
 # Function assumes that the provided x_pnts and y_pnts are pre-sorted from lowest to highest
 # Resolution can be increased by giving how many n points are desired between points in the given data set.
-def lin_interpolate(x_pnts, y_pnts, x, n):
-    if(x >= x_pnts[0] and x <= x_pnts[-1]):
-        for i in range(0, len(x_pnts)):
+def lin_interpolate(x_pnts, y_pnts, x, n = 1):
+    if(len(x_pnts) != len(y_pnts)): #Check to see if given x array and y array are equal length, otherwise exit
+        print("Error: Length of x_pnts and y_pnts do not match.")
+        return 0
+    
+    x_array = [] # Initialize output x array
+    y_array = [] # Initialize output y array
+
+    if(n == 1): # If resolution is default value, output the given arrays
+        x_array = x_pnts
+        y_array = y_pnts
+    else:
+        for i in range(0, len(x_pnts) - 1):
+            xarr = np.arange(x_pnts[i], x_pnts[i+1], n)
+            np.append(x_array, xarr)
+            yarr = np.arange(y_pnts[i], y_pnts[i+1], n)
+            np.append(y_array, yarr)
+
+
+    if(x >= x_pnts[0] and x <= x_pnts[-1]): # Check if requested x is within the given x range
+        for i in range(0, len(x_pnts)): # Find which two given points the requested x is between
             if(x >= x_pnts[i] and x <= x_pnts[i+1]):
                 xi = x_pnts[i]
                 xi1 = x_pnts[i+1]
@@ -17,18 +35,16 @@ def lin_interpolate(x_pnts, y_pnts, x, n):
                 yi1 = y_pnts[i+1]
                 print("x =", x, "falls between x =", xi, "and x =", xi1)
                 break
-            else:
-                print("Error in finding given point range.")
         a = (yi1 - yi) / (xi1 - xi)
         b = yi
-        g = a * (x - xi) + b
+        g = a * (x - xi) + b # Line between the two given points the requested x is between, calculating g as the y value
     else:
         print("x =", x, "falls outside of the given data range.")
-    return g
+    return g, x_array, y_array
 
 # Data array
 xpoints = [2, 3, 4, 9, 15]
 ypoints = [2, 6, 7, 12, 16]
-pnt = 9
+pnt = 15
 g_val = lin_interpolate(xpoints, ypoints, pnt, 1)
 print("The y value at x =", pnt, "is", g_val)
