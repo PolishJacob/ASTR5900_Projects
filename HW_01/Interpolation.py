@@ -9,8 +9,8 @@ import math
 # Resolution can be increased by giving how many n points are desired between points in the given data set.
 def lin_interpolate(x_pnts, y_pnts, x, n = 1):
     if(len(x_pnts) != len(y_pnts)): #Check to see if given x array and y array are equal length, otherwise exit
-        print("Error: Length of x_pnts and y_pnts do not match.")
-        return 0
+        print("Error: Length of x_pnts and y_pnts do not match. Values returned.")
+        return x, x_pnts, y_pnts
     
     x_array = [] # Initialize output x array
     y_array = [] # Initialize output y array
@@ -19,12 +19,22 @@ def lin_interpolate(x_pnts, y_pnts, x, n = 1):
         x_array = x_pnts
         y_array = y_pnts
     else:
-        for i in range(0, len(x_pnts) - 1):
+        for i in range(0, len(x_pnts) - 2):
+            xarr = []
+            yarr = []
+
             xarr = np.arange(x_pnts[i], x_pnts[i+1], n)
             np.append(x_array, xarr)
-            yarr = np.arange(y_pnts[i], y_pnts[i+1], n)
-            np.append(y_array, yarr)
 
+            xi = x_pnts[i]
+            xi1 = x_pnts[i+1]
+            yi = y_pnts[i]
+            yi1 = y_pnts[i+1]
+            yarr = np.arange(y_pnts[i], y_pnts[i+1], n)
+            a = (yi1 - yi) / (xi1 - xi)
+            b = yi
+            yarr = a * xarr + b
+            np.append(y_array, yarr)
 
     if(x >= x_pnts[0] and x <= x_pnts[-1]): # Check if requested x is within the given x range
         for i in range(0, len(x_pnts)): # Find which two given points the requested x is between
@@ -37,14 +47,21 @@ def lin_interpolate(x_pnts, y_pnts, x, n = 1):
                 break
         a = (yi1 - yi) / (xi1 - xi)
         b = yi
-        g = a * (x - xi) + b # Line between the two given points the requested x is between, calculating g as the y value
+        g = a * (x - xi) + b # Calculate y on line between the two given points the requested x is between
+
+
     else:
-        print("x =", x, "falls outside of the given data range.")
+        print("x =", x, "falls outside of the given data range. Values returned.")
+        return x, x_array, y_array
     return g, x_array, y_array
 
-# Data array
-xpoints = [2, 3, 4, 9, 15]
-ypoints = [2, 6, 7, 12, 16]
-pnt = 15
-g_val = lin_interpolate(xpoints, ypoints, pnt, 1)
+# Read data from HW_01.txt
+xpoints, ypoints = np.loadtxt('HW01_data.txt', skiprows=1, usecols=(0, 1), unpack=True)
+print("x array:", xpoints)
+print("y array:", ypoints)
+pnt = 5.5
+num = 10
+g_val, highResX, highResY = lin_interpolate(xpoints, ypoints, pnt, num)
 print("The y value at x =", pnt, "is", g_val)
+print("The interpolation x array is:", highResX)
+print("The interpolation y array is:", highResY)
