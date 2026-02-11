@@ -12,29 +12,28 @@ def lin_interpolate(x_pnts, y_pnts, x, n = 1):
         print("Error: Length of x_pnts and y_pnts do not match. Values returned.")
         return x, x_pnts, y_pnts
     
-    x_array = [] # Initialize output x array
-    y_array = [] # Initialize output y array
+    x_array = np.array([]) # Initialize output x array
+    y_array = np.array([]) # Initialize output y array
 
     if(n == 1): # If resolution is default value, output the given arrays
         x_array = x_pnts
         y_array = y_pnts
     else:
-        for i in range(0, len(x_pnts) - 2):
-            xarr = []
-            yarr = []
-
-            xarr = np.arange(x_pnts[i], x_pnts[i+1], n)
-            np.append(x_array, xarr)
-
+        for i in range(0, len(x_pnts) - 1):
+            xarr = np.array([])
+            yarr = np.array([])
             xi = x_pnts[i]
             xi1 = x_pnts[i+1]
             yi = y_pnts[i]
             yi1 = y_pnts[i+1]
-            yarr = np.arange(y_pnts[i], y_pnts[i+1], n)
+
+            xarr = np.linspace(xi, xi1, n)
+            x_array = np.append(x_array, xarr)
+
             a = (yi1 - yi) / (xi1 - xi)
-            b = yi
-            yarr = a * xarr + b
-            np.append(y_array, yarr)
+            b = yi - (a * xi)
+            yarr = (a * xarr) + b
+            y_array = np.append(y_array, yarr)
 
     if(x >= x_pnts[0] and x <= x_pnts[-1]): # Check if requested x is within the given x range
         for i in range(0, len(x_pnts)): # Find which two given points the requested x is between
@@ -59,9 +58,16 @@ def lin_interpolate(x_pnts, y_pnts, x, n = 1):
 xpoints, ypoints = np.loadtxt('HW01_data.txt', skiprows=1, usecols=(0, 1), unpack=True)
 print("x array:", xpoints)
 print("y array:", ypoints)
-pnt = 5.5
+pnt = 2.5
 num = 10
 g_val, highResX, highResY = lin_interpolate(xpoints, ypoints, pnt, num)
 print("The y value at x =", pnt, "is", g_val)
 print("The interpolation x array is:", highResX)
 print("The interpolation y array is:", highResY)
+print("Length of interpolated x array:", len(highResX))
+print("Length of interpolated y array:", len(highResY))
+
+plt.scatter(xpoints, ypoints)
+plt.scatter(pnt, g_val)
+plt.scatter(highResX, highResY, s = 3)
+plt.show()
