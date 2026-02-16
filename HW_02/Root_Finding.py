@@ -21,26 +21,48 @@ def bisection_root(x0, x1, err):
         return iterations, soln
 
 # Newton_Raphson_root function takes one guess of the root of a given function and finds the x value
-# associated with that root within some desired relative error using Newton-Raphson method. The function will
-# calculate the derivative of the function.
+# associated with that root within some desired relative error using Newton-Raphson method. Derivative must be
+# specified beforehand.
 def newton_raphson_root(x0, err):
-    soln = -1
-
-    x1 = x0 - (f(x0) / derivf(x0))
-    relErr = abs((x1 - x0) / x1)
+    # Initialize variables
+    x1 = -999
+    x_new = -999
+    x_old = -999
+    soln = -999
+    relErr = -999
     iterations = 1
 
-    if relErr < err: # See if x0 was a really good guess for x1
+    # Calculate first iteration
+    x1 = x0 - (f(x0) / derivf(x0))
+    relErr = abs((x1 - x0) / x1)
+    print("Iteration", iterations, ", x_new:", x1, ", relative error:", relErr)
+
+    # See if x0 was a really good guess for x1
+    if relErr < err:
         return iterations, x1
     else:
         x_old = x1
     
-    while(relErr > err): # Keep calculating x_new until relative error is below the requested error
+    # Keep calculating x_new until relative error is below the requested error
+    while(relErr > err):
         x_new = x_old - (f(x_old) / derivf(x_old))
         relErr = abs((x_new - x_old) / x_new)
+        iterations = iterations + 1
+        print("Iteration", iterations, ", x_new:", x_new, ", relative error:", relErr)
+
         if (relErr < err):
-            x_new = soln
+            soln = x_new
         else:
             x_old = x_new
-        iterations = iterations + 1
+
     return iterations, soln
+
+# Test functions
+its = -999
+solution = -999
+guess = 0.0
+error = 0.01
+
+its, solution = newton_raphson_root(guess, error)
+print("Number of iterations:", its)
+print("Solution:", solution)
