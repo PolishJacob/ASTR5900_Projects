@@ -25,14 +25,28 @@ def bisection_root(xleft, xright, err):
         print("Invalid set of guesses: Values do not cover a root.")
         return iterations, soln
     else:
+        # Calculate first x_new
         x_new = (xleft + xright) / 2
         y = f(x_new)
-        if y < 0:
+        interations = iterations + 1
+        if y < 0: # Calculate relErr from x_left and replace x_left
             relErr = abs((x_new - xleft) / x_new)
             xleft = x_new
-        else:
+        else: # Calculate relErr from x_right and replace x_right
             relErr = abs((x_new - xright) / x_new)
             xright = x_new
+
+        while(relErr > err): # Use first relErr calculation to calculate while loop to desired error
+            x_new = (xleft + xright) / 2
+            y = f(x_new)
+            iterations = iterations + 1
+            if y < 0:
+                relErr = abs((x_new - xleft) / x_new)
+                xleft = x_new
+            else:
+                relErr = abs((x_new - xright) / x_new)
+                xright = x_new
+
         return iterations, soln
 
 # Newton_Raphson_root function takes one guess of the root of a given function and finds the x value
@@ -76,6 +90,8 @@ def newton_raphson_root(x0, err):
 its = -999
 solution = -999
 guess = 0.0
+guess_left = 0.0
+guess_right = 1.0
 error = 0.01
 
 its, solution = newton_raphson_root(guess, error)
