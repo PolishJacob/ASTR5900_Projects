@@ -12,12 +12,27 @@ def derivf(x):
 
 # Bisection_root function takes two guesses on either side of the root of a given function and finds the x value
 # associated with that root within some desired relative error using the Bisection method.
-def bisection_root(x0, x1, err):
-    if (f(x0) > 0 and f(x1) > 0) or (f(x0) < 0 and f(x1) < 0): # Verify the two guesses have a zero value between then
+def bisection_root(xleft, xright, err):
+    # Initialize variables
+    y = -999
+    x_new = -999
+    relErr = -999
+    soln = -999
+    iterations = 1
+
+    # Verify the two guesses have a zero value between them
+    if (f(xleft) > 0 and f(xright) > 0) or (f(xleft) < 0 and f(xright) < 0):
         print("Invalid set of guesses: Values do not cover a root.")
-        return -1, -1
+        return iterations, soln
     else:
-        
+        x_new = (xleft + xright) / 2
+        y = f(x_new)
+        if y < 0:
+            relErr = abs((x_new - xleft) / x_new)
+            xleft = x_new
+        else:
+            relErr = abs((x_new - xright) / x_new)
+            xright = x_new
         return iterations, soln
 
 # Newton_Raphson_root function takes one guess of the root of a given function and finds the x value
@@ -28,8 +43,8 @@ def newton_raphson_root(x0, err):
     x1 = -999
     x_new = -999
     x_old = -999
-    soln = -999
     relErr = -999
+    soln = -999
     iterations = 1
 
     # Calculate first iteration
