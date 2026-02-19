@@ -18,7 +18,7 @@ def bisection_root(xleft, xright, err):
     x_new = -999
     relErr = -999
     soln = -999
-    iterations = 0
+    iterations = 1
 
     # Verify the two guesses have a zero value between them
     if (f(xleft) > 0 and f(xright) > 0) or (f(xleft) < 0 and f(xright) < 0):
@@ -28,7 +28,6 @@ def bisection_root(xleft, xright, err):
         # Calculate first x_new
         x_new = (xleft + xright) / 2
         y = f(x_new)
-        interations = iterations + 1
         if y < 0: # Calculate relErr from x_left and replace x_left
             relErr = abs((x_new - xleft) / x_new)
             xleft = x_new
@@ -41,13 +40,16 @@ def bisection_root(xleft, xright, err):
             x_new = (xleft + xright) / 2
             y = f(x_new)
             iterations = iterations + 1
-            soln = x_new
             if y < 0:
                 relErr = abs((x_new - xleft) / x_new)
                 xleft = x_new
+                if relErr < err:
+                    soln = x_new
             else:
                 relErr = abs((x_new - xright) / x_new)
                 xright = x_new
+                if relErr < err:
+                    soln = x_new
             print("Iteration", iterations, ", xleft:", xleft, "xright:", xright, ", relative error:", relErr)
 
         return iterations, soln
@@ -62,7 +64,7 @@ def newton_raphson_root(x0, err):
     x_old = -999
     relErr = -999
     soln = -999
-    iterations = 0
+    iterations = 1
 
     # Calculate first iteration
     x1 = x0 - (f(x0) / derivf(x0))
@@ -93,9 +95,9 @@ def newton_raphson_root(x0, err):
 its = -999
 solution = -999
 guess = 0.0
-guess_left = 0.0
-guess_right = 1.0
-error = 0.01
+guess_left = 0.2
+guess_right = 0.6
+error = 1e-8
 
 print("Newton-Raphson Method")
 its, solution = newton_raphson_root(guess, error)
