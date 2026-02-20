@@ -10,6 +10,14 @@ def derivf(x):
     y = (3 * x**2) - (14 * x) + 14
     return y
 
+def astroeq(x):
+    y = (5 * np.exp(-x)) + x - 5
+    return y
+
+def astroderiv(x):
+    y = (-5 * np.exp(-x)) + 1
+    return y
+
 # Bisection_root function takes two guesses on either side of the root of a given function and finds the x value
 # associated with that root within some desired relative error using the Bisection method.
 def bisection_root(xleft, xright, err):
@@ -91,6 +99,41 @@ def newton_raphson_root(x0, err):
 
     return iterations, soln
 
+# The same Newton-Raphson function defined above, but using the astroeq equation
+def astro_NR(x0, err):
+    # Initialize variables
+    x1 = -999
+    x_new = -999
+    x_old = -999
+    relErr = -999
+    soln = -999
+    iterations = 1
+
+    # Calculate first iteration
+    x1 = x0 - (astroeq(x0) / astroderiv(x0))
+    relErr = abs((x1 - x0) / x1)
+    print("Iteration", iterations, ", x_new:", x1, ", relative error:", relErr)
+
+    # See if x0 was a really good guess for x1
+    if relErr < err:
+        return iterations, x1
+    else:
+        x_old = x1
+    
+    # Keep calculating x_new until relative error is below the requested error
+    while(relErr > err):
+        x_new = x_old - (astroeq(x_old) / astroderiv(x_old))
+        relErr = abs((x_new - x_old) / x_new)
+        iterations = iterations + 1
+        print("Iteration", iterations, ", x_new:", x_new, ", relative error:", relErr)
+
+        if (relErr < err):
+            soln = x_new
+        else:
+            x_old = x_new
+
+    return iterations, soln
+
 # Test functions
 its = -999
 solution = -999
@@ -98,6 +141,7 @@ guess = 0.0
 guess_left = 0.0
 guess_right = 1.0
 error = 1e-8
+astro_guess = 3.0
 
 print("Newton-Raphson Method")
 its, solution = newton_raphson_root(guess, error)
@@ -107,5 +151,9 @@ print("Solution:", solution)
 print("Bisection Method")
 its, solution = bisection_root(guess_left, guess_right, error)
 print("Number of iterations:", its)
+print("Solution:", solution)
 
+print("Astro N-R Method")
+its, solution = astro_NR(astro_guess, error)
+print("Number of iterations:", its)
 print("Solution:", solution)
