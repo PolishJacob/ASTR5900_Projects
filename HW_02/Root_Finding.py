@@ -95,8 +95,8 @@ def newton_raphson_root(x0, err):
 its = -999
 solution = -999
 guess = 0.0
-guess_left = 0.2
-guess_right = 0.6
+guess_left = 0.0
+guess_right = 1.0
 error = 1e-8
 
 print("Newton-Raphson Method")
@@ -107,4 +107,5 @@ print("Solution:", solution)
 print("Bisection Method")
 its, solution = bisection_root(guess_left, guess_right, error)
 print("Number of iterations:", its)
+
 print("Solution:", solution)
