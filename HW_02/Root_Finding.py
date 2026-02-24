@@ -141,7 +141,7 @@ guess = 0.0
 guess_left = 0.0
 guess_right = 1.0
 error = 1e-8
-astro_guess = 3.0
+astro_guess = 6.0
 
 print("Newton-Raphson Method")
 its, solution = newton_raphson_root(guess, error)
