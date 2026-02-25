@@ -13,10 +13,12 @@ def euler_method(initial_x, final_x, initial_y, steps):
     x_new = initial_x + h
     f = dydx(initial_y) # dy/dx evaluated at xi and yi
     y_new = initial_y + (h * f)
+
+    # Print initial inputs and first calculations
     print(f"x_i = {initial_x:.3f}, y_i = {initial_y:.3f}, f = {f:.3f}, h * f = {h * f:.3f}, true tan(x) = {np.tan(initial_x * 180 / np.pi):.3f}")
     print(f"x_new = {x_new:.3f}, y_new = {y_new:.3f}, f = {f:.3f}, dx * f = {h * f:.3f}, true tan(x) = {np.tan(x_new):.3f}")
 
-    # Iterate by steps of x until final_x is reached
+    # Iterate by steps of x until final_x is reached. Print the variables in each step
     while x_new < final_x:
         x_new = x_new + h
         f = dydx(y_new)
@@ -26,10 +28,25 @@ def euler_method(initial_x, final_x, initial_y, steps):
     return y_new
 
 # RK2 Runge-Kutta Numerical Integration. 
-def runge_kutta_2():
-    yi1 = 0
+def runge_kutta_2(initial_x, final_x, initial_y, steps):
+    # Initialize variables
+    h = (final_x - initial_x) / steps # Step size
+    x_new = initial_x + h
+    K1 = dydx(initial_y)
+    K2 = dydx(initial_y + (h * K1))
+    y_new = initial_y + ((h * (K1 + K2)) / 2)
+    print(f"x_i = {initial_x:.3f}, y_i = {initial_y:.3f}, true tan(x) = {np.tan(initial_x * 180 / np.pi):.3f}")
+    print(f"x_new = {x_new:.3f}, y_new = {y_new:.3f}, true tan(x) = {np.tan(x_new):.3f}")
 
-    return yi1
+    # Iterate by steps of x until final_x is reached. Print the variables in each step
+    while x_new < final_x:
+        x_new = initial_x + h
+        K1 = dydx(initial_y)
+        K2 = dydx(initial_y + (h * K1))
+        y_new = initial_y + ((h * (K1 + K2)) / 2)
+        print(f"x_new = {x_new:.3f}, y_new = {y_new:.3f}, true tan(x) = {np.tan(x_new):.3f}")
+
+    return y_new
 
 # Test functions
 x_i = 0.0
@@ -38,5 +55,9 @@ y_i = 0.0
 steps = 1000
 
 print("Euler Method Numerical Integration")
-solution = euler_method(x_i, x_f, y_i, steps)
-print("Function solution: f(x) =", solution, "True solution: tan(x) =", np.tan(1))
+euler_solution = euler_method(x_i, x_f, y_i, steps)
+print("Function solution: f(x) =", euler_solution, "True solution: tan(x) =", np.tan(x_f))
+
+print("Runge-Kutta RK2 Numerical Integration")
+rk_solution = runge_kutta_2(x_i, x_f, y_i, steps)
+print("Function solution: f(x) =", rk_solution, "True solution: tan(x) =", np.tan(x_f))
