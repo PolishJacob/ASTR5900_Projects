@@ -40,10 +40,10 @@ def runge_kutta_2(initial_x, final_x, initial_y, steps):
 
     # Iterate by steps of x until final_x is reached. Print the variables in each step
     while x_new < final_x:
-        x_new = initial_x + h
-        K1 = dydx(initial_y)
-        K2 = dydx(initial_y + (h * K1))
-        y_new = initial_y + ((h * (K1 + K2)) / 2)
+        x_new = x_new + h
+        K1 = dydx(y_new)
+        K2 = dydx(y_new + (h * K1))
+        y_new = y_new + ((h * (K1 + K2)) / 2)
         print(f"x_new = {x_new:.3f}, y_new = {y_new:.3f}, true tan(x) = {np.tan(x_new):.3f}")
 
     return y_new
