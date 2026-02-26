@@ -5,10 +5,20 @@ import matplotlib.pyplot as plt
 def dydx(y):
     return y**2 + 1
 
-# Euler Method Numerical Integration. Takes some initial and final x, an initial y, along with an integer to divide 
-# xf - xi by to determine the step size h. Iteratively calculates the integral of a given function (here, a hard-coded 
-# function above). Returns an array for the x values, y values, true values, and the final y value.
-def euler_method(initial_x, final_x, initial_y, steps):
+# Maxwell-Boltzmann Velocity Distribution
+def f(v):
+    m = 1.67e-27
+    k = 1.38e-23
+    T = 10000
+
+    f = ((m / (2 * np.pi * k * T))**(3/2)) * (4 * np.pi * v**2) * np.exp(-(m * v**2) / (2 * k * T))
+    return f
+
+# Euler Method Numerical Integration. Takes a differential equation, some initial and final x, an initial y, 
+# along with an integer to divide xf - xi by to determine the step size h. Iteratively calculates the integral 
+# of a given function (here, a hard-coded function above). Returns an array for the x values, y values, 
+# true values, and the final y value.
+def euler_method(fxn, initial_x, final_x, initial_y, steps):
     # Initialize variables
     x_arr = np.array([])
     y_arr = np.array([])
@@ -22,7 +32,7 @@ def euler_method(initial_x, final_x, initial_y, steps):
     x_new = initial_x + h
     x_arr = np.append(x_arr, x_new)
     true_arr = np.append(true_arr, np.tan(x_new))
-    f = dydx(initial_y) # dy/dx evaluated at xi and yi
+    f = fxn(initial_y) # dy/dx evaluated at xi and yi
     y_new = initial_y + (h * f)
     y_arr = np.append(y_arr, y_new)
 
@@ -35,7 +45,7 @@ def euler_method(initial_x, final_x, initial_y, steps):
         x_new = x_new + h
         x_arr = np.append(x_arr, x_new)
         true_arr = np.append(true_arr, np.tan(x_new))
-        f = dydx(y_new)
+        f = fxn(y_new)
         y_new = y_new + (h * f)
         y_arr = np.append(y_arr, y_new)
 
@@ -43,11 +53,11 @@ def euler_method(initial_x, final_x, initial_y, steps):
 
     return x_arr, y_arr, true_arr, y_new
 
-# RK2 Runge-Kutta Numerical Integration. Uses the Modified Euler Method value of b = 1/2. Takes some initial 
-# and final x, an initial y, along with an integer to divide xf - xi by to determine the step size h. 
+# RK2 Runge-Kutta Numerical Integration. Uses the Modified Euler Method value of b = 1/2. Takes a differential equation, 
+# some initial and final x, an initial y, along with an integer to divide xf - xi by to determine the step size h. 
 # Iteratively calculates the integral of a given function (here, a hard-coded function above). 
 # Returns an array for the x values, y values, true values, and the final y value.
-def runge_kutta_2(initial_x, final_x, initial_y, steps):
+def runge_kutta_2(fxn, initial_x, final_x, initial_y, steps):
     # Initialize variables
     x_arr = np.array([])
     y_arr = np.array([])
@@ -61,8 +71,8 @@ def runge_kutta_2(initial_x, final_x, initial_y, steps):
     x_new = initial_x + h
     x_arr = np.append(x_arr, x_new)
     true_arr = np.append(true_arr, np.tan(x_new))
-    K1 = dydx(initial_y)
-    K2 = dydx(initial_y + (h * K1))
+    K1 = fxn(initial_y)
+    K2 = fxn(initial_y + (h * K1))
     y_new = initial_y + ((h * (K1 + K2)) / 2)
     y_arr = np.append(y_arr, y_new)
 
@@ -75,8 +85,8 @@ def runge_kutta_2(initial_x, final_x, initial_y, steps):
         x_new = x_new + h
         x_arr = np.append(x_arr, x_new)
         true_arr = np.append(true_arr, np.tan(x_new))
-        K1 = dydx(y_new)
-        K2 = dydx(y_new + (h * K1))
+        K1 = fxn(y_new)
+        K2 = fxn(y_new + (h * K1))
         y_new = y_new + ((h * (K1 + K2)) / 2)
         y_arr = np.append(y_arr, y_new)
 
@@ -86,9 +96,9 @@ def runge_kutta_2(initial_x, final_x, initial_y, steps):
 
 # Initialize variables
 x_i = 0.0
-x_f = 1.0
+x_f = 1
 y_i = 0.0
-steps = 1000
+steps = 100
 euler_x = np.array([])
 euler_y = np.array([])
 euler_true = np.array([])
@@ -100,13 +110,23 @@ rk_solution = -999
 
 # Calculate with both methods and print
 print("Euler Method Numerical Integration")
-euler_x, euler_y, euler_true, euler_solution = euler_method(x_i, x_f, y_i, steps)
+euler_x, euler_y, euler_true, euler_solution = euler_method(dydx, x_i, x_f, y_i, steps)
 print("Function solution: f(x) =", euler_solution, "True solution: tan(x) =", np.tan(x_f))
 
 print("Runge-Kutta RK2 Numerical Integration")
-rk_x, rk_y, rk_true, rk_solution = runge_kutta_2(x_i, x_f, y_i, steps)
+rk_x, rk_y, rk_true, rk_solution = runge_kutta_2(dydx, x_i, x_f, y_i, steps)
 print("Function solution: f(x) =", rk_solution, "True solution: tan(x) =", np.tan(x_f))
 
 # Plot convergence study of both methods
-plt.scatter(np.log(euler_x), np.log(np.abs(euler_y - euler_true)), s= 1)
+# log_x = np.logspace(euler_x[0], euler_x[-1], steps)
+# print(log_x, len(log_x))
+# plt.scatter(log_x, np.log(np.abs(euler_y - euler_true)), s= 1)
+# plt.show()
+
+# Maxwell-Boltzmann Velocity Distribution Plot
+mb_x = np.linspace(0, 40000, 40000) # Range of velocities
+mb_y = f(mb_x) # Probabilities
+plt.scatter(mb_x, mb_y, s = 10)
 plt.show()
+
+# Use RK2 for Maxwell-Boltzmann integration
