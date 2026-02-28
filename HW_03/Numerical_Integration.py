@@ -117,30 +117,30 @@ print("Runge-Kutta RK2 Numerical Integration")
 rk_x, rk_y, rk_true, rk_solution = runge_kutta_2(dydx, x_i, x_f, y_i, steps)
 print("Function solution: f(x) =", rk_solution, "True solution: tan(x) =", np.tan(x_f))
 
-# # Convergence Study
-# step_sizes = [10, 50, 100,  500, 1000] # Variety of step sizes for study
-# euler_diffs = []
-# rk2_diffs = []
-# x_arr, y_arr, true_arr, y_best = runge_kutta_2(dydx, x_i, x_f, y_i, 100000) # Best case for the study
+# Convergence Study
+step_sizes = [10, 50, 100,  500, 1000] # Variety of step sizes for study
+euler_diffs = []
+rk2_diffs = []
+x_arr, y_arr, true_arr, y_best = runge_kutta_2(dydx, x_i, x_f, y_i, 100000) # Best case for the study
 
-# # Loop through step sizes for fractional differences
-# for h in step_sizes:
-#     x_arr, y_arr, true_arr, y_euler = euler_method(dydx, x_i, x_f, y_i, h)
-#     x_arr, y_arr, true_arr, y_rk2 = runge_kutta_2(dydx, x_i, x_f, y_i, h)
+# Loop through step sizes for fractional differences
+for h in step_sizes:
+    x_arr, y_arr, true_arr, y_euler = euler_method(dydx, x_i, x_f, y_i, h)
+    x_arr, y_arr, true_arr, y_rk2 = runge_kutta_2(dydx, x_i, x_f, y_i, h)
     
-#     # Difference from "best"
-#     euler_diffs.append(abs((y_euler - y_best) / y_best))
-#     rk2_diffs.append(abs((y_rk2 - y_best) / y_best))
+    # Difference from "best"
+    euler_diffs.append(abs((y_euler - y_best) / y_best))
+    rk2_diffs.append(abs((y_rk2 - y_best) / y_best))
 
-# # Plot the convergence results
-# plt.figure(figsize=(8,6))
-# plt.loglog(step_sizes, euler_diffs, '-o', label='Euler')
-# plt.loglog(step_sizes, rk2_diffs, '-o', label='RK2')
-# plt.xlabel('Step Size (h)')
-# plt.ylabel('Fractional Difference')
-# plt.title('Convergence Study (Log-Log Scale)')
-# plt.legend()
-# plt.show()
+# Plot the convergence results
+plt.figure(figsize=(8,6))
+plt.loglog(step_sizes, euler_diffs, '-o', label='Euler')
+plt.loglog(step_sizes, rk2_diffs, '-o', label='RK2')
+plt.xlabel('Step Size (h)')
+plt.ylabel('Fractional Difference')
+plt.title('Convergence Study (Log-Log Scale)')
+plt.legend()
+plt.show()
 
 # Maxwell-Boltzmann Velocity Distribution Plot
 mb_x = np.linspace(0, 50000, 50000) # Range of velocities
@@ -157,11 +157,10 @@ mb_int_y = np.array([])
 mb_int_true = np.array([]) # Throw away array, current true values calculated for tan(x)
 mb_int_soln = -999
 min_v = np.sqrt((2 * (10.2 / 6.242e18)) / 1.67e-27) # KE = m v**2 / 2, where KE = delta E = 10.2 eV
-print(min_v)
+print("Minimum velocity for n=1 to n=2 transition:", min_v)
 max_v = 400000
 mb_initial_y = f(min_v)
-mb_steps = 1000
+mb_steps = 10000
 
-#mb_int_x, mb_int_y, mb_int_true, mb_int_soln = runge_kutta_2(f, min_v, max_v, mb_initial_y, mb_steps)
-#plt.scatter(mb_int_x, mb_int_y)
-#plt.show()
+mb_int_x, mb_int_y, mb_int_true, mb_int_soln = runge_kutta_2(f, min_v, max_v, mb_initial_y, mb_steps)
+print(mb_int_soln)
