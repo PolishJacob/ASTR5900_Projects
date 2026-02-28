@@ -17,7 +17,7 @@ def f(v):
 # Euler Method Numerical Integration. Takes a differential equation, some initial and final x, an initial y, 
 # along with an integer to divide xf - xi by to determine the step size h. Iteratively calculates the integral 
 # of a given function (here, a hard-coded function above). Returns an array for the x values, y values, 
-# true values, and the final y value.
+# true values (for the equation in Question 1), and the final y value.
 def euler_method(fxn, initial_x, final_x, initial_y, steps):
     # Initialize variables
     x_arr = np.array([])
@@ -56,7 +56,7 @@ def euler_method(fxn, initial_x, final_x, initial_y, steps):
 # RK2 Runge-Kutta Numerical Integration. Uses the Modified Euler Method value of b = 1/2. Takes a differential equation, 
 # some initial and final x, an initial y, along with an integer to divide xf - xi by to determine the step size h. 
 # Iteratively calculates the integral of a given function (here, a hard-coded function above). 
-# Returns an array for the x values, y values, true values, and the final y value.
+# Returns an array for the x values, y values, true values (for the equation in Question 1), and the final y value.
 def runge_kutta_2(fxn, initial_x, final_x, initial_y, steps):
     # Initialize variables
     x_arr = np.array([])
@@ -96,9 +96,9 @@ def runge_kutta_2(fxn, initial_x, final_x, initial_y, steps):
 
 # Initialize variables
 x_i = 0.0
-x_f = 1
+x_f = 1.0
 y_i = 0.0
-steps = 100
+steps = 1000
 euler_x = np.array([])
 euler_y = np.array([])
 euler_true = np.array([])
@@ -117,16 +117,51 @@ print("Runge-Kutta RK2 Numerical Integration")
 rk_x, rk_y, rk_true, rk_solution = runge_kutta_2(dydx, x_i, x_f, y_i, steps)
 print("Function solution: f(x) =", rk_solution, "True solution: tan(x) =", np.tan(x_f))
 
-# Plot convergence study of both methods
-# log_x = np.logspace(euler_x[0], euler_x[-1], steps)
-# print(log_x, len(log_x))
-# plt.scatter(log_x, np.log(np.abs(euler_y - euler_true)), s= 1)
+# # Convergence Study
+# step_sizes = [10, 50, 100,  500, 1000] # Variety of step sizes for study
+# euler_diffs = []
+# rk2_diffs = []
+# x_arr, y_arr, true_arr, y_best = runge_kutta_2(dydx, x_i, x_f, y_i, 100000) # Best case for the study
+
+# # Loop through step sizes for fractional differences
+# for h in step_sizes:
+#     x_arr, y_arr, true_arr, y_euler = euler_method(dydx, x_i, x_f, y_i, h)
+#     x_arr, y_arr, true_arr, y_rk2 = runge_kutta_2(dydx, x_i, x_f, y_i, h)
+    
+#     # Difference from "best"
+#     euler_diffs.append(abs((y_euler - y_best) / y_best))
+#     rk2_diffs.append(abs((y_rk2 - y_best) / y_best))
+
+# # Plot the convergence results
+# plt.figure(figsize=(8,6))
+# plt.loglog(step_sizes, euler_diffs, '-o', label='Euler')
+# plt.loglog(step_sizes, rk2_diffs, '-o', label='RK2')
+# plt.xlabel('Step Size (h)')
+# plt.ylabel('Fractional Difference')
+# plt.title('Convergence Study (Log-Log Scale)')
+# plt.legend()
 # plt.show()
 
 # Maxwell-Boltzmann Velocity Distribution Plot
-mb_x = np.linspace(0, 40000, 40000) # Range of velocities
+mb_x = np.linspace(0, 50000, 50000) # Range of velocities
 mb_y = f(mb_x) # Probabilities
 plt.scatter(mb_x, mb_y, s = 10)
+plt.xlabel('Velocity')
+plt.ylabel('Fraction of Particles')
+plt.title('Maxwell-Boltzmann Velocity Dispersion')
 plt.show()
 
 # Use RK2 for Maxwell-Boltzmann integration
+mb_int_x = np.array([])
+mb_int_y = np.array([])
+mb_int_true = np.array([]) # Throw away array, current true values calculated for tan(x)
+mb_int_soln = -999
+min_v = np.sqrt((2 * (10.2 / 6.242e18)) / 1.67e-27) # KE = m v**2 / 2, where KE = delta E = 10.2 eV
+print(min_v)
+max_v = 400000
+mb_initial_y = f(min_v)
+mb_steps = 1000
+
+#mb_int_x, mb_int_y, mb_int_true, mb_int_soln = runge_kutta_2(f, min_v, max_v, mb_initial_y, mb_steps)
+#plt.scatter(mb_int_x, mb_int_y)
+#plt.show()
